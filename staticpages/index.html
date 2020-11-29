@@ -1,0 +1,243 @@
+<!--Code adapated from https://github.com/andrewbeattycourseware/dataRepresenation2020-->
+<html>
+    <head>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+                integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+                <!--code for a favicon-->
+                <link rel="shortcut icon" href="foodie.ico">              
+                
+                <body style=background-color:rgb(250,250,210)></body><!--html code for background colour-->
+                <!--html code for centre-ing --><style>
+                    h1 {text-align: center;}
+                    div {text-align: center;}
+                    table {text-align: center;}   
+                    
+                    </style>
+    </head>
+    <body>
+        <h1>Tiobraid Cafe Stock System</h1>
+        <div id="create-update" style="display:none">
+            
+            <h2>Create New Stock Item</h2>
+            <table id="createUpdateForm">
+                <tr>
+                    <td>id</td>
+                    <td><input type="text" name="id" id="idInput"></td>
+                </tr>
+ 
+                <tr>
+                    <td>Description</td>
+                    <td><input type="text" name="Description"></td>
+                </tr>
+                <tr> <!-- Form Validation - A number must be entered in this field-->
+                    <td>Price</td>
+                    <td><input type="number" name="Price"></td>
+                </tr>
+                <tr>    
+                    <td>Provenance</td>
+                    <td><input type="text" name="Provenance"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button id="create-button" onclick="doCreate()"<button type="button" class="btn btn-success">Create</button>
+                        <button id="refresh-button" onclick="history.go(0)"<button type="button" class="btn btn-danger">Go Back</button>
+                        <button id="update-button" onclick="doUpdate()">update</button></td>
+                    </td>                      
+                  </tr>
+            </table>
+        </div>
+        <div id="display">
+            <h2>Stock Database</h2>
+            <button onClick="showCreate()"<button type="button" class="btn btn-success">Add New Stock</button>
+            <table id="stockTable" class="table">
+                <tr>
+                    <th>id</th><th>Description</th><th>Price</th><th>Provenance</th><th></th><th></th>
+                </tr>
+            </table>
+
+        </div>
+
+        <script>
+            function showCreate(){
+                document.getElementById('display').style.display = "none"
+                document.getElementById('update-button').style.display = "none"
+                document.getElementById('create-button').style.display = "block"
+                document.getElementById('create-update').style.display = "block"
+
+            }
+            function showUpdate(thisElem){
+                var rowElement = thisElem.parentNode.parentNode;
+                item = readItemFromRow(rowElement)
+                populateForm(item)
+
+                document.getElementById('display').style.display = "none"
+                document.getElementById('update-button').style.display = "block"
+                document.getElementById('create-button').style.display = "none"
+                document.getElementById('create-update').style.display = "block"
+
+            }
+            function readItemFromRow(rowElement){
+                item = {}
+                item.id = rowElement.getAttribute("id");
+                item.description = rowElement.cells[1].firstChild.textContent
+                item.price = rowElement.cells[2].firstChild.textContent
+                item.provenance = rowElement.cells[3].firstChild.textContent
+
+                return item
+                
+            }
+            function populateForm(item){
+                var form = document.getElementById('createUpdateForm')
+
+                
+                form.querySelector('input[name="id"]').value = item.id
+                form.querySelector('input[name="id"]').disabled=true
+                
+                form.querySelector('input[name="description"]').value = item.description
+                form.querySelector('input[name="price"]').value = item.price
+                form.querySelector('input[name="provenance"]').value = item.provenance      
+            }
+            function clearForm() {
+                    var form = document.getElementById('createUpdateForm')
+
+
+                    form.querySelector('input[name="id"]').value = ''
+                    form.querySelector('input[name="id"]').disabled = false
+
+                    form.querySelector('input[name="description"]').value = ''
+                    form.querySelector('input[name="price"]').value = ''
+                    form.querySelector('input[name="provenance"]').value = ''
+                }
+
+            function doCreate(){
+                console.log("in doCreate")
+                item= getItemFromForm()
+                console.log(item)
+                $.ajax({
+                    url:"/stock",
+                    data:JSON.stringify(item),
+                    method:"POST",
+                    dataType:"JSON",
+                    contentType: "application/json; charset=utf-8",
+                    success:function(result){
+                        console.log(result) 
+                        addStockToTable(item)
+                        showDisplay()
+                        clearForm()
+
+                    },
+                    error:function(xhr,status,error){
+                        console.log("error"+error)
+                    }
+                })
+               
+            }
+            function doUpdate(){
+                item = getItemFromForm()
+                updateServer(item)
+                
+            }
+            function updateServer(item){
+               $.ajax({
+                    url: "/stock/"+item.id,
+                    data: JSON.stringify(item),
+                    method: "PUT",
+                    dataType: "JSON",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        console.log(result)
+                        updateTableRow(item)
+                        showDisplay()
+                        clearForm()
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("error" + error)
+                    }
+                })
+            }
+            function doDelete(thisElem){
+                var tableElement = document.getElementById('stockTable');
+                var rowElement = thisElem.parentNode.parentNode;
+                var index = rowElement.rowIndex;
+                id = rowElement.getAttribute("id");
+                $.ajax({
+                    url:"/stock/"+id,
+                    method:"DELETE",
+                    dataType:"JSON",
+                    success:function(result){
+                        tableElement.deleteRow(index);
+                    },
+                    error:function(xhr,status,error){
+                        console.log(error)
+                    }
+                })
+                
+            }
+            function updateTableRow(item){
+                rowElement = document.getElementById(item.id)
+                rowElement.cells[1].firstChild.textContent = item.description
+                rowElement.cells[2].firstChild.textContent = item.price
+                rowElement.cells[3].firstChild.textContent = item.provenance
+                //console.log("updating table")
+            }
+            function getItemFromForm(){
+                var form = document.getElementById('createUpdateForm')
+                var item = {}
+                item.id = form.querySelector('input[name="id"]').value
+                item.description = form.querySelector('input[name="description"]').value
+                item.price = form.querySelector('input[name="price"]').value
+                item.provenance = form.querySelector('input[name="provenance"]').value
+                console.log(item)
+                return item
+            }
+             function showDisplay() {
+                    document.getElementById('display').style.display = "block"
+                    document.getElementById('create-update').style.display = "none"
+
+                }
+
+            function populateTable(){
+                //ajax calls server to getAll items
+               $.ajax({
+                   url:'http://127.0.0.1:5000/stock',
+                   method:'GET',
+                   datatype:'JSON',
+                   success:function(results){
+                        for (item of results){
+                             addStockToTable(item)
+                        }
+                   },
+                   error:function (xhr,status,error){
+                       console.log ("error "+error +" code:"+status)
+                   }
+
+               })
+               
+            }
+            function addStockToTable(item){
+                //console.log("working so far")
+                tableElem = document.getElementById("stockTable")
+                rowElem = tableElem.insertRow(-1)
+                rowElem.setAttribute("id", item.id)
+                cell1 = rowElem.insertCell(0)
+                cell1.innerHTML = item.id
+                cell2 = rowElem.insertCell(1)
+                cell2.innerHTML = item.description
+                cell3 = rowElem.insertCell(2)
+                cell3.innerHTML = item.price
+                cell4 = rowElem.insertCell(3)
+                cell4.innerHTML = item.provenance
+                cell5 = rowElem.insertCell(4)
+                cell5.innerHTML = '<button onclick="showUpdate(this)"<button type="button" class="btn btn-secondary">Update</button>'
+                cell6 = rowElem.insertCell(5)
+                cell6.innerHTML = '<button onclick="doDelete(this)"<button type="button" class="btn btn-danger">DELETE</button>'
+                
+                 }
+            populateTable()
+        </script>
+    </body>
+</html>
