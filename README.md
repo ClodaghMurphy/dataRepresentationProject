@@ -54,5 +54,8 @@ Options are Add New Stock, Update or Delete current stock.<br>
 The buttons are colour coded, a bootstrap convention to convey meaning.<br>
 When creating a new stock item, the programme will only accept numerical values in the price field.<br>
 Select "Go Back" if there is no requirement to create a  new item.<br>
+![](Index.jpg)
+![](Create.jpg)
+
 
 
