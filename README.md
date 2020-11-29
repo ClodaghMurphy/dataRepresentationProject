@@ -21,12 +21,12 @@ The repository contains:
 A newuser can amend this file to include their own local settings (e.g., user name and password) before proceeding.
 3. `requirements.txt` - what is needed is set out clearly in this separate file. 
 It used for specifying what python packages (and versions) are required to run this project. 
-To install your packages using requirements.txt.
+To install your packages using requirements.txt:
 
-Open a terminal or command prompt
-Navigate to the folder with requirements.txt
-run: pip install -r requirements.txt
-Installation of dependencies is complete.
+* Open a terminal or command prompt<br>
+* Navigate to the folder with requirements.txt<br>
+* run: pip install -r requirements.txt<br>
+* Installation of dependencies is complete.<br>
 
 4. `server.py` - The server programme is simple, with the “heavy lifting” carried out in the DAO.
 5. `server.py` - 
