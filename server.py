@@ -18,7 +18,7 @@ def getAll():
 @app.route('/stock/<int:id>') 
 def findById(id): 
     return jsonify(stockDao.findById(id))
-#curl http://127.0.0.1:5000/stock/109
+#curl http://127.0.0.1:5000/stock/10
 
 
 #curl -X POST -d "{\"description\":\"Apple Juice Box\", \"price\":1250, \"provenance\":\"The Apple Farm, Cahir\"}" -H "Content-Type:application/json" http://127.0.0.1:5000/stock
@@ -27,8 +27,10 @@ def create():
 
     if not request.json: #abort the request if it is not in the correct json format
         abort(400)
+    
     #if it is a good request do this, append the book with a new id and so on
     item = {
+        #"id":request.json["id"], omitted because the mysqldb is auto-incremented
         "description": request.json["description"],
         "price": request.json["price"],
         "provenance": request.json["provenance"]
@@ -39,7 +41,7 @@ def create():
 
 
 
-#curl -X PUT -d "{\"description\":\"new lad\", \"price\":567, \"provenance\":\"Cashel\"}" -H "Content-Type:application/json" http://127.0.0.1:5000/stock/115
+#curl -X PUT -d "{\"description\":\"new lad\", \"price\":567, \"provenance\":\"Cashel\"}" -H "Content-Type:application/json" http://127.0.0.1:5000/stock/15
 @app.route('/stock/<int:id>', methods=['PUT'])
 def update(id):
     foundItem=stockDao.findById(id)
@@ -57,7 +59,7 @@ def update(id):
     return jsonify(currentItem)
 
 
-#λ curl -X DELETE http://127.0.0.1:5000/stock/115
+#λ curl -X DELETE http://127.0.0.1:5000/stock/17
 #{
 #  "done": true
 #}

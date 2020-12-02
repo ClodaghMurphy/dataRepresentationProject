@@ -1,5 +1,6 @@
 #Code adapated from https://github.com/andrewbeattycourseware/dataRepresenation2020
 import mysql.connector
+from mysql.connector import cursor
 import config as config
 class StockDAO:
     db = ""
@@ -21,9 +22,9 @@ class StockDAO:
 #Create function _Insert
     def create(self, item):
         cursor = self.db.cursor()
-        sql = "insert into stock2 (description, price, provenance) values (%s,%s,%s)"
-        values = [#denotes a list
-            item['id'],
+        sql = "insert into stock (description, price, provenance) values (%s,%s,%s)"
+        values = [
+           #item['id'],
             item['description'],
             item['price'],
             item['provenance']
@@ -34,7 +35,7 @@ class StockDAO:
 #Get All
     def getAll(self):
         cursor = self.db.cursor()
-        sql = 'select * from stock2'
+        sql = 'select * from stock'
         cursor.execute(sql)
         results = cursor.fetchall()
         #this command will return tuples, below will convert to an array
@@ -46,35 +47,35 @@ class StockDAO:
         return returnArray   
 #Find One
     def findById(self,id):
+        #return{}
         cursor = self.db.cursor()
-        sql = 'select * from stock2 where id = %s'
-        values = [id, ]
+        sql = 'select * from stock where id = %s'
+        values = [id,]
         cursor.execute(sql, values)
         result = cursor.fetchone()
         return self.convertToDict(result) 
         print (result)
 #Update        
     def update(self, item):
-       cursor = self.db.cursor()
-       sql = "update stock2 set description = %s, price = %s, provenance = %s where id = %s"
-       #note on lines below you must change the order. It is important!
-       values = [
+        cursor = self.db.cursor()
+        sql = "update stock set description = %s, price = %s, provenance = %s where id = %s"
+#note on lines below you must change the order. It is important!
+        values = [
            item['description'],
            item['price'],
            item['provenance'],
            item['id']
 
        ]
-       cursor.execute(sql, values)
-       self.db.commit()
-       return item
+        cursor.execute(sql, values)
+        self.db.commit()
+        return item
     
 #Delete
     def delete(self, id):
        cursor = self.db.cursor()
-       sql = 'delete from stock2 where id = %s'
-
-       values = [id,]
+       sql = 'delete from stock where id = %s'
+       values = [id]
        cursor.execute(sql, values)
        return {}
 

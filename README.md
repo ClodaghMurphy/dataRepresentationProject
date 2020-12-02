@@ -29,11 +29,11 @@ To install your packages using requirements.txt:
 * Installation of dependencies is complete.<br>
 
 4. `server.py` - The server programme is simple, with the “heavy lifting” carried out in the DAO.
-5. `server.py` - 
-6. `index.html` - Accompanying web interface, uses AJAX calls, to perform these CRUD operations is saved in the `staticpages` folder
-7. `foodie.ico` - a favicon that provides a small food themed image displayed in the browser address bar
-8. `initdb.sql`- the sql code to create a database similar to the one used in this project
-
+5. `stockDAO.py` - The programme that consumes an API, it defines the standard CRUD operations to be performed.
+6. `testStockDAO.py`- included to show the process, this programme was used to test the DAO.
+7. `index.html` - Accompanying web interface, uses AJAX calls, to perform these CRUD operations is saved in the `staticpages` folder
+8. `foodie.ico` - a favicon that provides a small food themed image displayed in the browser address bar of index.html
+9.`initdb.sql`- the sql code to create a database similar to the one used in this project
 ## Instructions for downloading this repository
 Log on to GitHub and search for user ClodaghMurphy, the repository is entitled dataRepresentationProject.<br>
 On github.com choose the "Clone or download" button to copy the code onto your machine.<br>
